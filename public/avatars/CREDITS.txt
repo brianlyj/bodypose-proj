@@ -1,0 +1,10 @@
+Source: [Blue Archive] -Mari (Idol)- | Chibi + Stage
+Creator: VückyZ https://sketchfab.com/vuckyz123
+https://sketchfab.com/3d-models/blue-archive-mari-idol-chibi-stage-7412827541324d13a557d2f4a7f8d3c4
+License: Creative Commons Attribution 4.0
+https://creativecommons.org/licenses/by/4.0/
+
+Changes for Afterimage: stage removed, scale normalized, body skeleton and skin
+weights added, simplified blink/smile/brow/mouth shape keys and mouth interior added.
+The source GLB and its embedded attribution are retained in assets/source/.
+Blue Archive character rights remain with their respective owners.

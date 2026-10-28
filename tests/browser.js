@@ -1,7 +1,7 @@
 import { ComicRenderer } from '../src/renderer.js';
 import { DemoScene, GraphicLayers, surface } from '../src/scene.js';
 import { VisionPipeline } from '../src/vision.js';
-import { selectHand, FistTrigger, Transformation } from '../src/gesture.js';
+import { selectHand, FistTrigger, ExpressionTrigger, readExpression, Transformation } from '../src/gesture.js';
 
 const resultList=document.querySelector('#results');
 function pass(message){const li=document.createElement('li');li.textContent=`PASS — ${message}`;resultList.append(li);}
@@ -44,10 +44,10 @@ try{
   pipeline=new VisionPipeline(data=>resolveFrame?.(data),error=>rejectFrame?.(error),message=>{document.querySelector('#status').textContent=message;});
   await pipeline.init();pass('Both MediaPipe models and WASM load from local files in a worker.');
   const frame=surface(640,360),frameCtx=frame.getContext('2d');
-  async function infer(path,timestamp){
+  async function infer(path,timestamp,options){
     const img=new Image();img.src=path;await img.decode();
     frameCtx.fillStyle='#bbb';frameCtx.fillRect(0,0,640,360);const scale=Math.min(640/img.width,360/img.height);frameCtx.drawImage(img,(640-img.width*scale)/2,(360-img.height*scale)/2,img.width*scale,img.height*scale);
-    const result=await new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(new Error('Inference timed out')),30000);resolveFrame=data=>{clearTimeout(timeout);resolve(data);};rejectFrame=error=>{clearTimeout(timeout);reject(error);};pipeline.submit(frame,timestamp);});
+    const result=await new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(new Error('Inference timed out')),30000);resolveFrame=data=>{clearTimeout(timeout);resolve(data);};rejectFrame=error=>{clearTimeout(timeout);reject(error);};pipeline.submit(frame,timestamp,options);});
     return result;
   }
   const data=await infer('/tests/fixtures/fist.jpg',1000);const hand=selectHand(data.hands,false);data.bitmap.close();
@@ -73,5 +73,26 @@ try{
   assert(open.name==='Open_Palm'&&open2.name==='Open_Palm',`Expected open palm; got ${open.name}/${open2.name}`);
   latch.update(open,2850);latch.update(open2,3100);assert(latch.armed,'Real open palm did not rearm the trigger');
   pass(`Real open palms rearm the fist trigger (${(open2.score*100).toFixed(1)}% confidence).`);
+  const faceFrame=await infer('/tests/fixtures/portrait.jpg',3500,{trigger:'expression'});faceFrame.bitmap.close();
+  const expression=readExpression(faceFrame.face);
+  assert(expression.tracked,'Face trigger did not receive actual face scores in Comic camera mode');
+  assert(faceFrame.mask.length>0&&!faceFrame.avatar,'Comic camera segmentation disappeared with face tracking');
+  assert(faceFrame.hands.gestures.length===0,'Unselected hand inference was not skipped');
+  pass('Comic camera runs real face tracking with segmentation and skips unselected hand inference.');
+  const faceLatch=new ExpressionTrigger();faceLatch.update(expression,3500);
+  assert(!faceLatch.update(expression,3900).fired,'Neutral fixture unexpectedly transformed');
+  const simulated=structuredClone(faceFrame.face);
+  for(const c of simulated.blendshapes[0].categories){if(c.categoryName==='jawOpen')c.score=.9;if(c.categoryName.startsWith('eyeBlink'))c.score=0;}
+  const exaggerated=readExpression(simulated);faceLatch.update(exaggerated,4000);
+  const faceEvent=faceLatch.update(exaggerated,4350);assert(faceEvent.fired,'Simulated open eyes + mouth did not trigger');
+  const faceTransition=new Transformation(false);faceTransition.toggle(4350,faceEvent.point);
+  assert(faceTransition.sample(5250).to===1&&faceTransition.origin[0]===expression.point[0],'Face origin was not used');
+  pass('Real neutral face stays idle; simulated open-eye/open-mouth scores drive the face-centred transformation.');
+  // Video tracking needs another frame to reacquire after jumping between unrelated fixtures.
+  const reacquireFist=await infer('/tests/fixtures/fist.jpg',4700,{trigger:'fist'});reacquireFist.bitmap.close();
+  const fistAgain=await infer('/tests/fixtures/fist.jpg',4950,{trigger:'fist'});fistAgain.bitmap.close();
+  const selectedAgain=selectHand(fistAgain.hands,false);
+  assert(selectedAgain.name==='Closed_Fist',`Hand tracking failed after switching back: ${selectedAgain.name} (${selectedAgain.score})`);
+  pass('Switching back from expression to fist restores hand recognition.');
   document.querySelector('#status').textContent='ALL CHECKS PASSED';
 }catch(error){document.querySelector('#status').textContent=`FAILED: ${error.message}`;document.querySelector('#status').className='fail';console.error(error);}finally{pipeline?.dispose();}

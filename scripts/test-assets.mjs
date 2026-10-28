@@ -4,6 +4,8 @@ const assets = [
   ['fist.jpg', 'https://storage.googleapis.com/mediapipe-assets/tasks/testdata/vision/fist.jpg'],
   ['right_hands.jpg', 'https://storage.googleapis.com/mediapipe-assets/tasks/testdata/vision/right_hands.jpg'],
   ['woman_hands.jpg', 'https://storage.googleapis.com/mediapipe-tasks/hand_landmarker/woman_hands.jpg'],
+  ['pose.jpg', 'https://storage.googleapis.com/mediapipe-assets/tasks/testdata/vision/pose.jpg'],
+  ['portrait.jpg', 'https://storage.googleapis.com/mediapipe-assets/tasks/testdata/vision/portrait.jpg'],
 ];
 for (const [name, url] of assets) {
   const response=await fetch(url,{signal:AbortSignal.timeout(30000)});

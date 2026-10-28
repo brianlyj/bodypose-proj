@@ -1,0 +1,110 @@
+{
+  "source": "C:\\Users\\ASUS\\Downloads\\bodypose-proj\\assets\\source\\Reference-mari.glb",
+  "output": "C:\\Users\\ASUS\\Downloads\\bodypose-proj\\public\\avatars\\Mari-rigged.glb",
+  "bones": [
+    "Root",
+    "Hips",
+    "Spine",
+    "Chest",
+    "Neck",
+    "Head",
+    "LeftShoulder",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightShoulder",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+  ],
+  "meshes": [
+    {
+      "mesh": "Object_3",
+      "material": "Texture_0",
+      "vertices": 8039
+    },
+    {
+      "mesh": "Object_4",
+      "material": "material",
+      "vertices": 186
+    },
+    {
+      "mesh": "Object_5",
+      "material": "eye_brow",
+      "vertices": 96
+    },
+    {
+      "mesh": "Object_6",
+      "material": "face",
+      "vertices": 730
+    },
+    {
+      "mesh": "Object_7",
+      "material": "hair",
+      "vertices": 2815
+    },
+    {
+      "mesh": "Object_8",
+      "material": "halo",
+      "vertices": 256
+    },
+    {
+      "mesh": "Object_10",
+      "material": "mouth",
+      "vertices": 25
+    },
+    {
+      "mesh": "Object_11",
+      "material": "outline",
+      "vertices": 7960
+    },
+    {
+      "mesh": "Object_12",
+      "material": "outline",
+      "vertices": 2633
+    }
+  ],
+  "shapeKeys": {
+    "Object_4": [
+      "Basis",
+      "eyeBlinkLeft",
+      "eyeBlinkRight"
+    ],
+    "Object_5": [
+      "Basis",
+      "browOuterUpLeft",
+      "browOuterUpRight",
+      "browInnerUp"
+    ],
+    "Object_6": [
+      "Basis",
+      "eyeBlinkLeft",
+      "eyeBlinkRight"
+    ],
+    "Object_10": [
+      "Basis",
+      "jawOpen",
+      "mouthSmileLeft",
+      "mouthSmileRight"
+    ],
+    "Object_11": [
+      "Basis",
+      "eyeBlinkLeft",
+      "eyeBlinkRight"
+    ],
+    "MouthInterior": [
+      "Basis",
+      "jawOpen"
+    ],
+    "Tongue": [
+      "Basis",
+      "jawOpen"
+    ]
+  }
+}

@@ -35,7 +35,7 @@ export class VisionPipeline {
     }).finally(() => { this.initializing = null; });
     return this.initializing;
   }
-  async submit(canvas, timestamp) {
+  async submit(canvas, timestamp, {avatar=false,trigger='fist'}={}) {
     if (!this.ready || this.busy) return false;
     this.busy = true;
     const id = ++this.sequence, epoch = this.epoch;
@@ -43,7 +43,7 @@ export class VisionPipeline {
       const bitmap = await createImageBitmap(canvas);
       if (epoch !== this.epoch || !this.worker) { bitmap.close(); this.busy = false; return false; }
       this.pending.set(id, epoch);
-      this.worker.postMessage({ type: 'frame', bitmap, timestamp, id }, [bitmap]);
+      this.worker.postMessage({ type: 'frame', bitmap, timestamp, id, avatar, trigger }, [bitmap]);
       return true;
     } catch (error) { this.busy = false; this.onError(error); return false; }
   }

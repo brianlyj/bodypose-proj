@@ -10,7 +10,7 @@ function polygon(ctx, points, fill) {
 /** A hand-drawn animated stand-in. It uses the same shader pipeline as the webcam. */
 export class DemoScene {
   constructor() { this.source = surface(); this.mask = surface(); }
-  draw(time, fist = false) {
+  draw(time, fist = false, expression = false) {
     const ctx = this.source.getContext('2d'), mask = this.mask.getContext('2d');
     const w = this.source.width, h = this.source.height;
     const bg = ctx.createLinearGradient(0,0,w,h); bg.addColorStop(0,'#b9b6b1'); bg.addColorStop(1,'#626d74');
@@ -42,7 +42,11 @@ export class DemoScene {
         polygon(c,[[526,222],[511,274],[539,276]],'#a77d69');
         c.strokeStyle='#403c3b';c.lineWidth=5;c.beginPath();c.moveTo(462,222);c.lineTo(500,218);c.moveTo(556,216);c.lineTo(592,217);c.stroke();
         c.fillStyle='#292b2e';c.beginPath();c.ellipse(487,230,5,6,0,0,Math.PI*2);c.ellipse(568,225,5,6,0,0,Math.PI*2);c.fill();
-        c.strokeStyle='#805951';c.lineWidth=3;c.beginPath();c.moveTo(508,299);c.quadraticCurveTo(533,306,552,295);c.stroke();
+        if(expression){
+          c.fillStyle='#f5eee5';c.beginPath();c.ellipse(487,230,13,12,0,0,Math.PI*2);c.ellipse(568,225,13,12,0,0,Math.PI*2);c.fill();
+          c.fillStyle='#292b2e';c.beginPath();c.ellipse(487,230,5,7,0,0,Math.PI*2);c.ellipse(568,225,5,7,0,0,Math.PI*2);c.fill();
+          c.fillStyle='#553b3e';c.beginPath();c.ellipse(531,300,15,19,0,0,Math.PI*2);c.fill();
+        }else{c.strokeStyle='#805951';c.lineWidth=3;c.beginPath();c.moveTo(508,299);c.quadraticCurveTo(533,306,552,295);c.stroke();}
         c.strokeStyle='#34373e';c.lineWidth=3;c.strokeRect(452,211,55,37);c.strokeRect(548,207,54,36);c.beginPath();c.moveTo(508,222);c.lineTo(548,219);c.stroke();
       }
       polygon(c,[[421,214],[417,160],[440,108],[491,77],[551,74],[602,97],[635,148],[632,208],[609,182],[590,138],[567,199],[550,164],[532,215],[514,157],[488,197],[480,159],[450,211],[447,248]],isMask?'#fff':'#222831');
@@ -67,7 +71,7 @@ export class DemoScene {
       }
       c.restore(); c.restore();
     }
-    return { source: this.source, mask: this.mask, chest: [(529+sway)/w, .29], hand: [(270+sway)/w, .49] };
+    return { source: this.source, mask: this.mask, chest: [(529+sway)/w, .29], hand: [(270+sway)/w, .49], face: [(529+sway)/w, .46] };
   }
 }
 
