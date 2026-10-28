@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fixture camera verification</title></head><body><div style="position:fixed;bottom:0;left:0;right:0;background:#6d3159;color:white;z-index:999;padding:8px;font:12px sans-serif">TEST CAMERA — public fixtures only, no real webcam. <button id="fixture-fist">Show fist</button> <button id="fixture-portrait">Show portrait</button> <button id="fixture-palm">Show open palms</button> <button id="fixture-deny">Deny next camera request</button> <span id="fixture-status">Ready</span></div><div id="app"></div><script type="module">
+const frame=document.createElement('canvas');frame.width=640;frame.height=360;const context=frame.getContext('2d');
+const images=await Promise.all(['fist','woman_hands','right_hands'].map(async name=>{const image=new Image();image.src=`/tests/fixtures/${name}.jpg`;await image.decode();return image;}));
+let selected=1,deny=false,currentStream;
+function draw(){const image=images[selected];context.fillStyle='#bbb';context.fillRect(0,0,640,360);const scale=Math.min(640/image.width,360/image.height);context.drawImage(image,(640-image.width*scale)/2,(360-image.height*scale)/2,image.width*scale,image.height*scale);requestAnimationFrame(draw);}draw();
+Object.defineProperty(navigator.mediaDevices,'getUserMedia',{value:async()=>{if(deny){deny=false;throw new DOMException('Test permission denial','NotAllowedError');}currentStream=frame.captureStream(15);currentStream.getVideoTracks()[0].addEventListener('ended',()=>document.querySelector('#fixture-status').textContent='Track ended');return currentStream;}});
+Object.defineProperty(navigator.mediaDevices,'enumerateDevices',{value:async()=>[]});
+document.querySelector('#fixture-fist').onclick=()=>{selected=0;};document.querySelector('#fixture-portrait').onclick=()=>{selected=1;};document.querySelector('#fixture-palm').onclick=()=>{selected=2;};document.querySelector('#fixture-deny').onclick=()=>{deny=true;};
+setInterval(()=>{document.querySelector('#fixture-status').textContent=currentStream?`Camera track: ${currentStream.getVideoTracks()[0].readyState}`:'Camera not requested';},500);
+await import('/src/main.js');
+</script></body></html>

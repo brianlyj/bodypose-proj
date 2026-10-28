@@ -1,0 +1,15 @@
+{
+  "name": "afterimage-camera-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "setup": "node scripts/setup-assets.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": { "@mediapipe/tasks-vision": "1.2.0" },
+  "devDependencies": { "vite": "8.3.5" }
+}

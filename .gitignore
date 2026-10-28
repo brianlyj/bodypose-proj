@@ -1,0 +1,8 @@
+node_modules/
+dist/
+public/wasm/
+public/models/
+public/vendor/
+test-results/
+tests/fixtures/*.jpg
+*.log
